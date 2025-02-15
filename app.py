@@ -14,7 +14,7 @@ def fetch_poster(movie_name):
     """Fetch movie poster from OMDb API"""
     url = f"http://www.omdbapi.com/?t={movie_name}&apikey={OMDB_API_KEY}"
     response = requests.get(url).json()
-    return response.get("Poster", "https://via.placeholder.com/300x450")  # Default if no poster found
+    return response.get("Poster", "https://via.placeholder.com/300x450")  
 
 def recommend(movie):
     """Return 5 recommended movies & their posters"""
@@ -24,7 +24,7 @@ def recommend(movie):
     recommended_movies = []
     recommended_posters = []
     
-    for i in distances[1:15]:  # Top 5 Recommendations
+    for i in distances[1:6]:  # Top 5 Recommendations
         movie_name = movies.iloc[i[0]].title
         recommended_movies.append(movie_name)
         recommended_posters.append(fetch_poster(movie_name))
@@ -34,12 +34,16 @@ def recommend(movie):
 @app.route("/", methods=["GET", "POST"])
 def home():
     recommended_movies, recommended_posters = [], []
-    
+    selected_movie = ""  # Default empty
+
     if request.method == "POST":
-        selected_movie = request.form.get("movie_name")
+        selected_movie = request.form.get("movie_name")  # Get selected movie from form
         recommended_movies, recommended_posters = recommend(selected_movie)
-    
-    return render_template("index.html", movie_list=movies["title"].values, recommendations=zip(recommended_movies, recommended_posters))
+
+    return render_template("index.html", 
+                           movie_list=movies["title"].values, 
+                           selected_movie=selected_movie,  # Pass selected movie
+                           recommendations=zip(recommended_movies, recommended_posters))
 
 if __name__ == "__main__":
     app.run(debug=True)
