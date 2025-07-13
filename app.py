@@ -4,7 +4,7 @@ import requests
 
 app = Flask(__name__)
 
-OMDB_API_KEY = "b249dfe7"
+OMDB_API_KEY = "2364daa8"
 
 # Load movie data & similarity matrix
 movies = pickle.load(open("movie_list1.pkl", "rb"))
